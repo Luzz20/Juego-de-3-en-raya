@@ -1,0 +1,87 @@
+import java.util.Scanner;
+
+public class TresEnRaya {
+    private char[][] tablero;
+    private char jugadorActual;
+	private Scanner scanner;
+
+    public TresEnRaya() {
+        tablero = new char[3][3];
+        jugadorActual = 'X'; // El jugador X comienza
+        inicializarTablero();
+    }
+
+    private void inicializarTablero() {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                tablero[i][j] = ' ';
+            }
+        }
+    }
+
+    private void imprimirTablero() {
+        System.out.println("Tablero:");
+        for (int i = 0; i < 3; i++) {
+            System.out.print(" " + tablero[i][0] + " | " + tablero[i][1] + " | " + tablero[i][2]);
+            System.out.println();
+            if (i < 2) {
+                System.out.println("---+---+---");
+            }
+        }
+    }
+
+    private boolean hayGanador(char simbolo) {
+        // Comprobar filas, columnas y diagonales
+        for (int i = 0; i < 3; i++) {
+            if ((tablero[i][0] == simbolo && tablero[i][1] == simbolo && tablero[i][2] == simbolo) ||
+                (tablero[0][i] == simbolo && tablero[1][i] == simbolo && tablero[2][i] == simbolo)) {
+                return true;
+            }
+        }
+        return (tablero[0][0] == simbolo && tablero[1][1] == simbolo && tablero[2][2] == simbolo) ||
+               (tablero[0][2] == simbolo && tablero[1][1] == simbolo && tablero[2][0] == simbolo);
+    }
+
+    private boolean hayEspacios() {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (tablero[i][j] == ' ') {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void jugar() {
+        scanner = new Scanner(System.in);
+        while (hayEspacios()) {
+            imprimirTablero();
+            System.out.println("Turno del jugador " + jugadorActual + ". Ingresa fila y columna (0, 1 o 2):");
+            int fila = scanner.nextInt();
+            int col = scanner.nextInt();
+
+            if (fila >= 0 && fila < 3 && col >= 0 && col < 3 && tablero[fila][col] == ' ') {
+                tablero[fila][col] = jugadorActual;
+
+                if (hayGanador(jugadorActual)) {
+                    imprimirTablero();
+                    System.out.println("¡El jugador " + jugadorActual + " ha ganado!");
+                    return;
+                }
+
+                // Cambiar de jugador
+                jugadorActual = (jugadorActual == 'X') ? 'O' : 'X';
+            } else {
+                System.out.println("Movimiento inválido. Intenta de nuevo.");
+            }
+        }
+        imprimirTablero();
+        System.out.println("¡Es un empate!");
+    }
+
+    public static void main(String[] args) {
+        TresEnRaya juego = new TresEnRaya();
+        juego.jugar();
+    }
+}
